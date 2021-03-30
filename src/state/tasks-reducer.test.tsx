@@ -1,85 +1,94 @@
-import React, {useState} from 'react';
-import {
-    AddTodolistAC,
-    ChangeTodolistFilterAC,
-    ChangeTodolistTitleAC,
-    RemoveTodolistAC,
-    todolistsReducer
-} from './todolists-reducer';
+import React from 'react';
 import {v1} from 'uuid';
-import {FilterValuesType, TodolistType} from '../App';
+import {FilterValuesType, TasksStateType, TodolistType} from '../App';
+import {AddTaskAC, ChangeTaskStatusAC, ChangeTaskTitleAC, RemoveTaskAC, tasksReducer} from "./tasks-reducer";
 
 test('correct task should be removed', () => {
-    let todolistId1 = v1();
-    let todolistId2 = v1();
+    const startState: TasksStateType = {
+        "todolistId1": [
+            {id: "1", title: "HTML&CSS", isDone: true},
+            {id: "2", title: "JS", isDone: true}
+        ],
+        "todolistId2": [
+            {id: "1", title: "Milk", isDone: true},
+            {id: "2", title: "React Book", isDone: true}
+        ]
+    }
 
-    const startState: Array<TodolistType> = [
-        {id: todolistId1, title: "What to learn", filter: "all"},
-        {id: todolistId2, title: "What to buy", filter: "all"}
-    ]
+    const endState = tasksReducer(startState, RemoveTaskAC("2","todolistId2"))
 
-    const endState = todolistsReducer(startState, RemoveTodolistAC(todolistId1))
-
-    expect(endState.length).toBe(1);
-    expect(endState[0].id).toBe(todolistId2);
+    expect(endState).toEqual({
+        "todolistId1": [
+            {id: "1", title: "HTML&CSS", isDone: true},
+            {id: "2", title: "JS", isDone: true}
+        ],
+        "todolistId2": [
+            {id: "1", title: "Milk", isDone: true},
+        ]
+    })
 });
 
 test('correct task should be added', () => {
-    let todolistId1 = v1();
-    let todolistId2 = v1();
+    const startState: TasksStateType = {
+        "todolistId1": [
+            {id: "1", title: "HTML&CSS", isDone: true},
+            {id: "2", title: "JS", isDone: true}
+        ],
+        "todolistId2": [
+            {id: "1", title: "Milk", isDone: true},
+            {id: "2", title: "React Book", isDone: true}
+        ]
+    }
 
-    let newTodolistTitle = "New Todolist";
+    const endState = tasksReducer(startState, AddTaskAC("juce","todolistId2"))
 
-    const startState: Array<TodolistType> = [
-        {id: todolistId1, title: "What to learn", filter: "all"},
-        {id: todolistId2, title: "What to buy", filter: "all"}
-    ]
-
-    const endState = todolistsReducer(startState, AddTodolistAC(newTodolistTitle))
-
-    expect(endState.length).toBe(3);
-    expect(endState[2].title).toBe(newTodolistTitle);
-    expect(endState[2].filter).toBe("all");
-    expect(endState[2].id).toBeDefined();
+   expect(endState["todolistId1"].length).toBe(2)
+   expect(endState["todolistId2"].length).toBe(3)
+   expect(endState["todolistId2"][0].id).toBeDefined()
+   expect(endState["todolistId2"][0].title).toBe("juce")
+   expect(endState["todolistId2"][0].isDone).toBe(true)
 });
 
 test('correct task should change its name', () => {
-    let todolistId1 = v1();
-    let todolistId2 = v1();
+    const startState: TasksStateType = {
+        "todolistId1": [
+            {id: "1", title: "HTML&CSS", isDone: true},
+            {id: "2", title: "JS", isDone: true}
+        ],
+        "todolistId2": [
+            {id: "1", title: "Milk", isDone: true},
+            {id: "2", title: "React Book", isDone: true}
+        ]
+    }
 
-    let newTodolistTitle = "New Todolist";
+let newTitle = "New Title"
+    const action = ChangeTaskTitleAC("2","todolistId2",newTitle);
 
-    const startState: Array<TodolistType> = [
-        {id: todolistId1, title: "What to learn", filter: "all"},
-        {id: todolistId2, title: "What to buy", filter: "all"}
-    ]
+    const endState = tasksReducer(startState, action);
 
+    expect(endState["todolistId2"][1].title).toBe(newTitle)
+    expect(endState["todolistId2"][0].title).toBe("Milk")
 
-    const action = ChangeTodolistTitleAC(todolistId2, newTodolistTitle);
-
-    const endState = todolistsReducer(startState, action);
-
-    expect(endState[0].title).toBe("What to learn");
-    expect(endState[1].title).toBe(newTodolistTitle);
 });
 
 test('correct task should change its title', () => {
-    let todolistId1 = v1();
-    let todolistId2 = v1();
+    const startState: TasksStateType = {
+        "todolistId1": [
+            {id: "1", title: "HTML&CSS", isDone: true},
+            {id: "2", title: "JS", isDone: true}
+        ],
+        "todolistId2": [
+            {id: "1", title: "Milk", isDone: true},
+            {id: "2", title: "React Book", isDone: true}
+        ]
+    }
 
-    let newFilter: FilterValuesType = "completed";
+    const action = ChangeTaskStatusAC("2", "todolistId2", false);
 
-    const startState: Array<TodolistType> = [
-        {id: todolistId1, title: "What to learn", filter: "all"},
-        {id: todolistId2, title: "What to buy", filter: "all"}
-    ]
+    const endState = tasksReducer(startState, action);
 
-    const action = ChangeTodolistFilterAC(todolistId2, newFilter);
-
-    const endState = todolistsReducer(startState, action);
-
-    expect(endState[0].filter).toBe("all");
-    expect(endState[1].filter).toBe(newFilter);
-});
+    expect(endState["todolistId2"][1].isDone).toBe(false)
+    expect(endState["todolistId2"][0].isDone).toBe(true)
+})
 
 
