@@ -10,7 +10,7 @@ export type IncrementAge = {
 export type IncrementChildrenCount = {
     type: 'INCREMENT-CHILDREN-COUNT'
 }
-export type ChangeName= {
+export type ChangeName = {
     type: 'CHANGE-NAME',
     newName: string
 }
@@ -38,4 +38,15 @@ export const userReducer = (state: StateType, action: ActionType) => {
         default:
             throw new Error("I don't understand this type")
     }
+}
+
+
+export const IncrementAgeAC = (): IncrementAge => {
+    return { type: 'INCREMENT-AGE' }
+}
+export const IncrementChildrenCountAC = (): IncrementChildrenCount => {
+    return { type: 'INCREMENT-CHILDREN-COUNT' }
+}
+export const ChangeNameAC = (newName:string): ChangeName => {
+    return { type: 'CHANGE-NAME', newName: newName }
 }
