@@ -3,14 +3,20 @@ type StateType = {
     childrenCount: number
     name: string
 }
-type ActionType = {
-    type: string
-    [key: string]: any
+
+export type IncrementAge = {
+    type: 'INCREMENT-AGE'
+}
+export type IncrementChildrenCount = {
+    type: 'INCREMENT-CHILDREN-COUNT'
+}
+export type ChangeName= {
+    type: 'CHANGE-NAME',
+    newName: string
 }
 
-// меня вызовут и дадут мне стейт (почти всегда объект)
-// и инструкцию (action, тоже объект)
-// согласно прописаному type в этом action (инструкции) я поменяю state
+type ActionType = IncrementAge | IncrementChildrenCount | ChangeName;
+
 export const userReducer = (state: StateType, action: ActionType) => {
     switch (action.type) {
         case 'INCREMENT-AGE':
