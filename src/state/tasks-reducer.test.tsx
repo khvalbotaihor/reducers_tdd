@@ -1,6 +1,5 @@
 import React from 'react';
-import {v1} from 'uuid';
-import {FilterValuesType, TasksStateType, TodolistType} from '../App';
+import {TasksStateType} from '../App';
 import {AddTaskAC, ChangeTaskStatusAC, ChangeTaskTitleAC, RemoveTaskAC, tasksReducer} from "./tasks-reducer";
 
 test('correct task should be removed', () => {
